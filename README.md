@@ -1,3 +1,24 @@
+<!-- TODO: add the NeurIPS 2026 paper page link once it is live; confirm the project-page URL once GitHub Pages is enabled. -->
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/static/images/shadowbench-banner-dark.png">
+    <img src="docs/static/images/shadowbench-banner.png" alt="ShadowBench: Probing Shadow Knowledge" width="720">
+  </picture>
+</p>
+
+<p align="center">
+  <b>ShadowBench: Exposing Lexical Anchoring and the Illusion of Forgetting in Large Language Models</b><br>
+  Sujan Maharjan &middot; Lu Liu<br>
+  North Dakota State University &middot; NeurIPS 2026, Evaluations &amp; Datasets Track
+</p>
+
+<p align="center">
+  Paper (NeurIPS page coming soon) &middot;
+  <a href="https://sujanw0w.github.io/ShadowBench/">Project page</a> &middot;
+  <a href="https://github.com/sujanW0W/ShadowBench">Code</a> &middot;
+  <a href="https://huggingface.co/collections/sujan-maharjan/shadowbench-datasets">Datasets</a>
+</p>
+
 # ShadowBench: Framework for Latent Entity Association and Unlearning Evaluation
 
 ShadowBench is a diagnostic framework designed to evaluate the "Shadow Knowledge" of Large Language Models (LLMs). This repository contains the complete pipeline for dataset construction, baseline knowledge probing, and the evaluation of Machine Unlearning algorithms using latent associative metrics.
@@ -90,7 +111,15 @@ Located in `unlearn_evaluation/`, this suite probes unlearned models for residua
 
 ## 📜 Citation
 
-(Anonymized for review)
+```bibtex
+% PLACEHOLDER: replace with the official NeurIPS 2026 entry once it is available.
+@inproceedings{maharjan2026shadowbench,
+  title     = {ShadowBench: Exposing Lexical Anchoring and the Illusion of Forgetting in Large Language Models},
+  author    = {Maharjan, Sujan and Liu, Lu},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS), Evaluations and Datasets Track},
+  year      = {2026}
+}
+```
 
 ---
 
