@@ -151,7 +151,7 @@
     <p class="table-caption" style="text-align:center;">Accuracy change (points), Direct QA &rarr; ShadowBench, Entertainment Lower tier.</p>
 
     <details class="more">
-      <summary>Full numbers (Table 8)</summary>
+      <summary>Full numbers (Table 5)</summary>
       <div class="table-wrap">
         <table class="data">
           <thead>
@@ -168,7 +168,7 @@
           </tbody>
         </table>
       </div>
-      <p class="table-caption"><strong>Table 8 (Appendix B.2).</strong> Direct QA vs. ShadowBench (SB) accuracy (%).</p>
+      <p class="table-caption"><strong>Table 5 (Appendix B.2).</strong> Direct QA vs. ShadowBench (SB) accuracy (%).</p>
     </details>
   </div>
 </section>
@@ -194,14 +194,14 @@
     </div>
 
     <div class="textbox">
-      <div class="tb-title">Qualitative analysis: explicit identity reconstruction (Qwen3-8B)</div>
-      <div><strong>Shadow prompt:</strong> <em>&ldquo;In July 2017, the subject said that the subject had received &lsquo;verbal government approval&rsquo; to build a hyperloop from New York City to Washington, D.C.&rdquo;</em></div>
+      <div class="tb-title">Qualitative Analysis: Explicit Identity Reconstruction (Qwen3-8B)</div>
+      <div><strong>Shadow prompt:</strong> <em>&ldquo;In July 2017, the subject said that the subject had received &lsquo;verbal government approval&rsquo; to build a hyperloop from New York City to Washington, D.C...&rdquo;</em></div>
       <div style="margin-top:0.5rem;"><strong>Model reasoning trace (Chain-of-Thought):</strong></div>
       <div class="trace">&lt;think&gt;</div>
-      <div class="trace">The hyperloop is a transportation concept, and I remember that <span class="leak">Elon Musk</span> has been involved with hyperloop ideas.</div>
-      <div class="trace">Option B: Launched the Amazon Kindle in 2007. That's <strong>Jeff Bezos</strong>.</div>
-      <div class="trace">Option D: Co-founded Neuralink in 2016. Neuralink is a company founded by <span class="leak">Elon Musk</span>.</div>
-      <div class="trace">If the question is about someone involved in a hyperloop project, and the answer D is about co-founding Neuralink (<span class="leak">which is Musk</span>), then the answer would be D.</div>
+      <div class="trace">... The hyperloop is a transportation concept, and I remember that <span class="leak">Elon Musk</span> has been involved with hyperloop ideas. ...</div>
+      <div class="trace">... Option B: Launched the Amazon Kindle in 2007. That's <strong>Jeff Bezos</strong>. ...</div>
+      <div class="trace">... Option D: Co-founded Neuralink in 2016. Neuralink is a company founded by <span class="leak">Elon Musk</span>. ...</div>
+      <div class="trace">... If the question is about someone involved in a hyperloop project, and the answer D is about co-founding Neuralink (<span class="leak">which is Musk</span>), then the answer would be D. ...</div>
       <div class="trace">&lt;/think&gt;</div>
       <div style="margin-top:0.5rem;"><strong>Final predicted option:</strong> D &nbsp;&middot;&nbsp; <span class="muted"><strong>Reference:</strong> correct answer Elon Musk; distractors Ray Kurzweil, Jeff Bezos, Larry Ellison.</span></div>
     </div>
@@ -255,7 +255,7 @@
         </tbody>
       </table>
     </div>
-    <p class="table-caption"><strong>Table 11 (Appendix C).</strong> Multi-domain unlearning generalization of NPO+KL (Shadow Forget metrics). Direct lexical recall is suppressed, yet latent associations persist.</p>
+    <p class="table-caption"><strong>Table 9 (Appendix C).</strong> Multi-domain unlearning generalization of NPO+KL (Shadow Forget metrics). Direct lexical recall is suppressed, yet latent associations persist.</p>
 
     <div class="modes">
       <div class="mode">
