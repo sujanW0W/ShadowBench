@@ -122,7 +122,7 @@ We utilize the ShadowBench framework to expose the "Illusion of Forgetting" in c
 
 Located in `unlearn_evaluation/`, this suite probes unlearned models for residual latent knowledge.
 
-- **`main.py`:** a registry-driven evaluator (`--model_path`, `--subset`, `--split`, `--output_name`, `--metrics`, `--baseline_json`) that writes results to `results/`. Available metrics:
+- **`main.py`:** a registry-driven evaluator (`--model_path`, `--repo_name`, `--subset`, `--split`, `--output_name`, `--metrics`, `--baseline_json`) that writes results to `results/`. Available metrics:
     - `generation`: ROUGE scores and exact match on direct forget/retain questions.
     - `probability`: answer-only cross-entropy loss and Perplexity (PPL).
     - `utility`: perplexity over full utility text.

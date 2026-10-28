@@ -431,6 +431,7 @@ def main():
     }
 
     # 5. Save final file
+    os.makedirs("results", exist_ok=True)
     OUTPUT_PATH = f"results/{args.output_name}"
     with open(OUTPUT_PATH, 'w') as fp:
         json.dump(final_output, fp, indent=4)
