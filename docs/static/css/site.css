@@ -80,6 +80,9 @@ h1, h2, h3, .title { color: var(--accent) !important; font-family: inherit !impo
 .publication-title { font-size: 2.4rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.25rem !important; }
 .publication-authors { font-size: 1.1rem; font-weight: 500; color: var(--text); }
 .publication-authors .author-block { display: inline-block; margin: 0 0.6rem; }
+.publication-authors { font-size: 1.25rem; }
+.publication-authors a { font-weight: 600; text-decoration: none; }
+.publication-authors a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .publication-affil { color: var(--text-muted); margin-top: 0.4rem; text-align: center; line-height: 1.5; }
 .banner { display: block; width: 100%; max-width: 760px; height: auto; margin: 0 auto 1.25rem; }
 
