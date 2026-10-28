@@ -1,0 +1,228 @@
+/* ShadowBench project page: minimal, white, one accent (#2F5BEA) for links and headings.
+   Layout classes come from Bulma; structure adapted from the Academic Project Page Template
+   (https://github.com/eliahuhorwitz/Academic-project-page-template), itself adopted from Nerfies. */
+
+:root {
+  --accent: #2F5BEA;
+  --accent-hover: #1f43b8;
+  --text: #1f2430;
+  --text-muted: #5b6270;
+  --border: #e3e6ec;
+  --bg: #ffffff;
+  --bg-soft: #f6f7f9;
+  --leak: #b42318;
+  --btn-bg: #1f2430;
+  --btn-fg: #ffffff;
+  --card: #ffffff;
+  color-scheme: light dark;
+}
+
+/* Themes: follows the system setting unless the visitor picks one with the toggle (data-theme on <html>).
+   Accent is lightened in dark mode for contrast. */
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] {
+    --accent: #7c9af5;
+    --accent-hover: #a3b8f8;
+    --text: #e6e8ee;
+    --text-muted: #9aa3b2;
+    --border: #2b3447;
+    --bg: #141a26;
+    --bg-soft: #1b2333;
+    --leak: #ff8a7a;
+    --btn-bg: #e6e8ee;
+    --btn-fg: #141a26;
+    --card: #1b2333;
+    color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --accent: #7c9af5;
+    --accent-hover: #a3b8f8;
+    --text: #e6e8ee;
+    --text-muted: #9aa3b2;
+    --border: #2b3447;
+    --bg: #141a26;
+    --bg-soft: #1b2333;
+    --leak: #ff8a7a;
+    --btn-bg: #e6e8ee;
+    --btn-fg: #141a26;
+    --card: #1b2333;
+    color-scheme: dark;
+  }
+}
+
+html { scroll-behavior: smooth; background: var(--bg); }
+strong, b { color: inherit; }
+.content, .content p, .content li { text-align: left; }
+
+body {
+  font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.65;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); }
+a:hover { color: var(--accent-hover); }
+
+h1, h2, h3, .title { color: var(--accent) !important; font-family: inherit !important; }
+.title.is-2 { font-weight: 700; }
+.section-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem !important; }
+.sub-title { font-size: 1.2rem; font-weight: 600; margin: 1.75rem 0 0.5rem !important; }
+
+.content p, .content li { color: var(--text); }
+.content .muted, .muted { color: var(--text-muted); }
+
+/* header */
+.hero-head { padding: 3rem 1.5rem 1rem; text-align: center; }
+.publication-title { font-size: 2.4rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.25rem !important; }
+.publication-authors { font-size: 1.1rem; font-weight: 500; color: var(--text); }
+.publication-authors .author-block { display: inline-block; margin: 0 0.6rem; }
+.publication-affil { color: var(--text-muted); margin-top: 0.4rem; text-align: center; line-height: 1.5; }
+.banner { display: block; width: 100%; max-width: 760px; height: auto; margin: 0 auto 1.25rem; }
+
+/* link-button icons */
+.link-block .button .icon { width: 1.1em; height: 1.1em; margin-right: 0.45rem; margin-left: 0; }
+.link-block .button .icon svg { width: 1.1em; height: 1.1em; fill: currentColor; }
+
+/* key-number cards */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0 0.5rem; }
+.stat { border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; background: var(--bg-soft); }
+.stat .num { font-size: 1.9rem; font-weight: 800; color: var(--text); line-height: 1.2; font-variant-numeric: tabular-nums; }
+.stat .lbl { font-size: 0.9rem; color: var(--text-muted); margin-top: 0.3rem; line-height: 1.4; }
+.publication-venue { color: var(--text-muted); font-weight: 600; margin-top: 0.5rem; }
+
+.link-block { margin-top: 1.5rem; }
+.link-block .button {
+  margin: 0.3rem;
+  border-radius: 8px;
+  font-weight: 600;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  border: none;
+}
+.link-block .button:hover { background: var(--accent); color: var(--bg); }
+.link-block .button.is-disabled { background: var(--bg-soft); color: var(--text-muted); border: 1px solid var(--border); cursor: default; pointer-events: none; }
+
+.hero-figure { max-width: 520px; margin: 1.5rem auto 0.5rem; }
+.tagline { font-size: 1.2rem; color: var(--text); max-width: 42rem; margin: 0.5rem auto 0; font-weight: 500; }
+
+/* sections */
+.section { padding: 2.25rem 1.5rem; }
+.section + .section { border-top: 1px solid var(--border); }
+
+/* figures */
+figure.fig { margin: 1.5rem 0; }
+figure.fig .fig-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem; overflow-x: auto; }
+figure.fig img { display: block; width: 100%; height: auto; margin: 0 auto; }
+figure.fig figcaption { font-size: 0.92rem; color: var(--text-muted); margin-top: 0.6rem; line-height: 1.5; }
+figure.fig figcaption strong { color: var(--text); }
+figure.fig.fig-narrow { max-width: 720px; margin-left: auto; margin-right: auto; }
+
+/* tables */
+.table-wrap { overflow-x: auto; margin: 1rem 0; }
+table.data { border-collapse: collapse; width: 100%; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+table.data th, table.data td { padding: 0.4rem 0.7rem; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; }
+table.data th { font-weight: 600; background: var(--bg-soft); }
+table.data thead th { text-align: center; }
+table.data th:first-child, table.data td:first-child,
+table.data th.l, table.data td.l { text-align: left; }
+table.data thead tr:nth-child(2) th { font-weight: 500; }
+table.data thead th { border-bottom: 2px solid var(--text); }
+table.data td, table.data th { color: var(--text); }
+table.data tr.group td { text-align: left; font-weight: 700; background: var(--bg-soft); }
+table.data td.hl { font-weight: 700; }
+.table-caption { font-size: 0.92rem; color: var(--text-muted); margin-top: 0.4rem; line-height: 1.5; }
+.table-caption strong { color: var(--text); }
+.table-caption + .content { margin-top: 1.25rem; }
+
+/* text boxes (examples) */
+.textbox {
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  font-size: 0.93rem;
+  line-height: 1.6;
+  margin: 1.25rem 0 0.4rem;
+}
+.textbox .tb-title { font-weight: 700; margin-bottom: 0.5rem; }
+.textbox .trace { font-family: 'SF Mono', 'Cascadia Code', Consolas, Menlo, monospace; font-size: 0.86rem; color: var(--text); margin: 0.35rem 0; }
+.textbox .leak { color: var(--leak); font-weight: 700; }
+
+.eq { text-align: center; font-size: 1.05rem; margin: 1rem 0; padding: 0.6rem 0.5rem; overflow-x: auto; }
+.eq .var { font-style: italic; }
+
+/* hardening steps */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.25rem 0; }
+.step { border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; background: var(--bg); }
+.step .step-tag { font-weight: 700; color: var(--accent); }
+.step p { margin: 0.3rem 0 0; font-size: 0.93rem; }
+
+/* takeaways */
+.takeaways li { margin-bottom: 0.6rem; }
+
+/* bibtex */
+.bibtex-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+.copy-bibtex-btn {
+  background: var(--btn-bg); color: var(--btn-fg); border: none; border-radius: 8px;
+  padding: 0.5rem 1rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.copy-bibtex-btn:hover { background: var(--accent); color: var(--bg); }
+.copy-bibtex-btn.copied { background: #1a7f4b; color: #fff; }
+pre { background: var(--bg-soft) !important; border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem !important; font-size: 0.86rem; overflow-x: auto; color: var(--text) !important; }
+pre code { background: transparent !important; color: var(--text) !important; padding: 0 !important; }
+
+details.more { margin: 1rem 0; }
+details.more summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+
+/* footer */
+.footer { background: var(--bg-soft); border-top: 1px solid var(--border); padding: 2.5rem 1.5rem; }
+.footer .content { color: var(--text-muted); font-size: 0.92rem; }
+
+@media screen and (max-width: 768px) {
+  .hero-head { padding: 2rem 1rem 0.5rem; }
+  .publication-title { font-size: 1.7rem; }
+  .publication-authors .author-block { display: block; margin: 0.15rem 0; }
+  .section { padding: 1.75rem 1rem; }
+  .steps { grid-template-columns: 1fr; }
+  .content.has-text-justified, .content.has-text-justified p { text-align: left; }
+  .link-block .button { width: 100%; justify-content: center; margin: 0.25rem 0; }
+}
+
+/* leakage-mode panels */
+.modes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin: 1.5rem 0; }
+.mode { border: 1px solid var(--border); border-radius: 10px; padding: 1rem; background: var(--bg-soft); }
+.mode h4 { color: var(--accent); font-weight: 700; margin: 0 0 0.6rem; font-size: 1.05rem; }
+.mode img { display: block; width: 100%; height: auto; border-radius: 8px; margin-bottom: 0.7rem; }
+.mode p { font-size: 0.93rem; margin: 0.3rem 0 0; }
+.lead-line { font-size: 1.15rem; font-weight: 600; color: var(--text); margin-bottom: 1rem; }
+@media screen and (max-width: 768px) { .modes { grid-template-columns: 1fr; } }
+
+/* banner swaps with the theme */
+.banner-dark { display: none; }
+:root[data-theme="dark"] .banner-light { display: none; }
+:root[data-theme="dark"] .banner-dark { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .banner-light { display: none; }
+  :root:not([data-theme="light"]) .banner-dark { display: block; }
+}
+
+/* theme toggle */
+.theme-toggle {
+  position: fixed; top: 1rem; right: 1rem; z-index: 50;
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--bg-soft); color: var(--text);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.theme-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.theme-toggle .ico-sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .ico-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .ico-moon { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle .ico-sun { display: block; }
+  :root:not([data-theme="light"]) .theme-toggle .ico-moon { display: none; }
+}

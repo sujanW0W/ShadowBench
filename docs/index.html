@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>ShadowBench: Exposing Lexical Anchoring and the Illusion of Forgetting in Large Language Models</title>
+  <meta name="title" content="ShadowBench: Exposing Lexical Anchoring and the Illusion of Forgetting in Large Language Models">
+  <meta name="description" content="ShadowBench measures latent entity association in LLMs without entity names (Dual-Trait Association) and shows that unlearned models can still leak the forgotten entity in their reasoning (LELR).">
+  <meta name="keywords" content="ShadowBench, shadow knowledge, lexical anchoring, Dual-Trait Association, machine unlearning, Latent Entity Leakage Rate, LELR, LLM evaluation, benchmark">
+  <meta name="author" content="Sujan Maharjan, Lu Liu">
+  <meta name="robots" content="index, follow">
+
+  <!-- TODO: confirm the public URL once GitHub Pages is enabled (assumed: https://sujanw0w.github.io/ShadowBench/) -->
+  <link rel="canonical" href="https://sujanw0w.github.io/ShadowBench/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="North Dakota State University">
+  <meta property="og:title" content="ShadowBench: Exposing Lexical Anchoring and the Illusion of Forgetting in Large Language Models">
+  <meta property="og:description" content="Models recall facts by name. Remove the name and the knowledge is still there, only as a shadow.">
+  <meta property="og:url" content="https://sujanw0w.github.io/ShadowBench/">
+  <meta property="og:image" content="https://sujanw0w.github.io/ShadowBench/static/images/social_preview.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="ShadowBench logo: an anonymous trait reaches a hidden entity whose shadow points to the matching trait">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ShadowBench: Exposing Lexical Anchoring and the Illusion of Forgetting in Large Language Models">
+  <meta name="twitter:description" content="Models recall facts by name. Remove the name and the knowledge is still there, only as a shadow.">
+  <meta name="twitter:image" content="https://sujanw0w.github.io/ShadowBench/static/images/social_preview.png">
+
+  <meta name="citation_title" content="ShadowBench: Exposing Lexical Anchoring and the Illusion of Forgetting in Large Language Models">
+  <meta name="citation_author" content="Maharjan, Sujan">
+  <meta name="citation_author" content="Liu, Lu">
+  <meta name="citation_publication_date" content="2026">
+  <meta name="citation_conference_title" content="Advances in Neural Information Processing Systems (NeurIPS), Evaluations and Datasets Track">
+
+  <meta name="color-scheme" content="light dark">
+  <script>
+    try { var t = localStorage.getItem('sb-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+  </script>
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141a26" media="(prefers-color-scheme: dark)">
+  <link rel="icon" type="image/svg+xml" href="static/images/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  <link rel="apple-touch-icon" href="static/images/apple-touch-icon-180.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/site.css">
+  <script defer src="static/js/index.js"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "ShadowBench: Exposing Lexical Anchoring and the Illusion of Forgetting in Large Language Models",
+    "author": [
+      {"@type": "Person", "name": "Sujan Maharjan", "affiliation": {"@type": "Organization", "name": "North Dakota State University"}},
+      {"@type": "Person", "name": "Lu Liu", "affiliation": {"@type": "Organization", "name": "North Dakota State University"}}
+    ],
+    "isPartOf": {"@type": "Event", "name": "NeurIPS 2026, Evaluations and Datasets Track"},
+    "image": "https://sujanw0w.github.io/ShadowBench/static/images/social_preview.png",
+    "url": "https://sujanw0w.github.io/ShadowBench/"
+  }
+  </script>
+</head>
+
+<body>
+
+<button class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle light/dark theme" title="Toggle light/dark theme"><span class="ico-moon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.1A8.5 8.5 0 0 1 9.9 3.5a8.5 8.5 0 1 0 10.6 10.6z"/></svg></span><span class="ico-sun"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg></span></button>
+
+<!-- ============ Header ============ -->
+<header class="hero-head">
+  <div class="container is-max-desktop">
+    <img class="banner banner-light" src="static/images/shadowbench-banner.png" alt="ShadowBench: an anonymous trait sends a beam through a lattice of parameters; the hidden entity is a void whose shadow falls on the floor, and the beam lands on the highest-scoring of four candidate traits. Tagline: Probing Shadow Knowledge.">
+    <img class="banner banner-dark" src="static/images/shadowbench-banner-dark.png" alt="" aria-hidden="true">
+    <h1 class="title publication-title">ShadowBench: Exposing Lexical Anchoring and the Illusion of Forgetting in Large Language Models</h1>
+
+    <div class="publication-authors">
+      <span class="author-block">Sujan Maharjan</span>
+      <span class="author-block">Lu Liu</span>
+    </div>
+    <div class="publication-affil">
+      <div>Department of Computer Science</div>
+      <div>North Dakota State University</div>
+    </div>
+    <div class="publication-venue">NeurIPS 2026 &middot; Evaluations &amp; Datasets Track</div>
+
+    <div class="link-block">
+      <!-- TODO: replace with the NeurIPS 2026 paper page URL once it is available (it will also link slides and poster) -->
+      <span class="button is-disabled" title="Link will be added when the NeurIPS paper page is live"><span class="icon"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M369.9 97.9L286 14C277 5 264.8-.1 252.1-.1H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V131.9c0-12.7-5.1-25-14.1-34zM332.1 128H256V51.9l76.1 76.1zM48 464V48h160v104c0 13.3 10.7 24 24 24h104v288H48zm250.2-143.7c-12.2-12-47-8.7-64.4-6.5-17.2-10.5-28.7-25-36.8-46.3 3.9-16.1 10.1-40.6 5.4-56-4.2-26.2-37.8-23.6-42.6-5.9-4.4 16.1-.4 38.5 7 67.1-10 23.9-24.9 56-35.4 74.4-20 10.3-47 26.2-51 46.2-3.3 15.8 26 55.2 76.1-31.2 22.4-7.4 46.8-16.5 68.4-20.1 18.9 10.2 41 17 55.8 17 25.5 0 28-28.2 17.5-38.7zm-198.1 77.8c5.1-13.7 24.5-29.5 30.4-35-19 30.3-30.4 35.7-30.4 35zm81.6-190.6c7.4 0 6.7 32.1 1.8 40.8-4.4-13.9-4.3-40.8-1.8-40.8zm-24.4 136.6c9.7-16.9 18-37 24.7-54.7 8.3 15.1 18.9 27.2 30.1 35.5-20.8 4.3-38.9 13.1-54.8 19.2zm131.6-5s-5 6-37.3-7.8c35.1-2.6 40.9 5.4 37.3 7.8z"/></svg></span><span>Paper &middot; coming soon</span></span>
+      <a class="button" href="https://github.com/sujanW0W/ShadowBench" target="_blank" rel="noopener"><span class="icon"><svg viewBox="0 0 496 512" aria-hidden="true"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span><span>Code</span></a>
+      <a class="button" href="https://huggingface.co/collections/sujan-maharjan/shadowbench-datasets" target="_blank" rel="noopener"><span class="icon"><svg viewBox="0 0 448 512" aria-hidden="true"><path d="M448 73.143v45.714C448 159.143 347.667 192 224 192S0 159.143 0 118.857V73.143C0 32.857 100.333 0 224 0s224 32.857 224 73.143zM448 176v102.857C448 319.143 347.667 352 224 352S0 319.143 0 278.857V176c48.125 33.143 136.208 48.572 224 48.572S399.874 209.143 448 176zm0 160v102.857C448 479.143 347.667 512 224 512S0 479.143 0 438.857V336c48.125 33.143 136.208 48.572 224 48.572S399.874 369.143 448 336z"/></svg></span><span>Datasets</span></a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ 1. Foundation ============ -->
+<section class="section" id="foundation">
+  <div class="container is-max-desktop">
+    <h2 class="section-title">Knowledge is anchored to names</h2>
+    <div class="content">
+      <p class="lead-line">Models recall facts by name. Remove the name, and the knowledge is still there, only as a shadow.</p>
+      <p>Current benchmarks mostly follow a <strong>Name-to-Fact recall</strong> paradigm: the question names an entity, and the model is scored on the fact it returns. We find that LLM knowledge is <strong>lexically anchored</strong>: models possess extensive factual information but find it significantly difficult to retrieve without explicit name tokens. We call this hidden layer <strong>Shadow Knowledge</strong>.</p>
+    </div>
+    <figure class="fig fig-narrow">
+      <div class="fig-card"><img src="static/figures/latent_conceptual_space.svg" alt="Iceberg diagram: lexical recall (names) sits above the surface, while the latent concept space lies below it." loading="lazy"></div>
+      <figcaption><strong>Lexical recall vs. latent concept space.</strong> Names sit at the surface, and are what existing benchmarks probe. Below the surface, the facts about an entity are linked in a latent concept space. Shadow Knowledge is the knowledge that lives there but is hard to reach without the name.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 2. DTA task ============ -->
+<section class="section" id="task">
+  <div class="container is-max-desktop">
+    <h2 class="section-title">Probing it: the Dual-Trait Association task</h2>
+    <div class="content">
+      <p>ShadowBench replaces the entity's name with &ldquo;the subject.&rdquo; The model reads an anonymized description of an entity (<strong>Trait A</strong>) and must choose, among hard-negative distractors, the answer that describes the <strong>same hidden entity</strong> (<strong>Trait B</strong>). To succeed it must first <em>identify</em> the latent entity, then <em>associate</em> a second fact with it.</p>
+    </div>
+    <figure class="fig">
+      <div class="fig-card"><img src="static/figures/dta.svg" alt="Dual-Trait Association: Trait A points to the latent entity E_latent via identification, which points to Trait B via association." loading="lazy"></div>
+      <figcaption><strong>Dual-Trait Association (DTA).</strong> Trait A &rarr; (identification) E<sub>latent</sub> &rarr; (association) Trait B. The name E<sub>latent</sub> is never shown to the model.</figcaption>
+    </figure>
+    <div class="content">
+      <p>Facts come from Wikipedia for three domains (Technology, Sports, Entertainment) and two popularity tiers (popular <em>Upper</em>, niche <em>Lower</em>). They are iteratively hardened (v1&rarr;v3) against shortcuts such as gendered pronouns and chronological cues, so that success requires latent association.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. Shadow Gap ============ -->
+<section class="section" id="shadow-gap">
+  <div class="container is-max-desktop">
+    <h2 class="section-title">Finding 1: The Shadow Gap</h2>
+    <div class="content">
+      <p>We evaluate <strong>Llama-3-8B-Instruct</strong>, <strong>Qwen3-8B</strong>, <strong>GPT-5.4-mini</strong>, <strong>GPT-5.4</strong>, and <strong>Claude-Sonnet-4.6</strong>. Removing the entity name lowers accuracy, and the gap persists up to the frontier models.</p>
+    </div>
+    <figure class="fig">
+      <div class="fig-card"><img src="static/figures/shadow_gap_claude-sonnet-4.6_gpt-5.4_qwen.svg" alt="Bar chart of accuracy for Direct QA (grey) versus ShadowBench (blue) across Tech, Sports and Entertainment, Upper and Lower tiers, for Qwen3-8B, GPT-5.4 and Claude-Sonnet-4.6." loading="lazy"></div>
+      <figcaption><strong>The persistence of the Shadow Gap.</strong> Direct QA (grey) vs. ShadowBench (blue) accuracy for Qwen3-8B, GPT-5.4 and Claude-Sonnet-4.6.</figcaption>
+    </figure>
+    <div class="content">
+      <p><strong>How to read it.</strong> Each pair of bars is one domain and tier (Tech, Sports, Ent; <em>-U</em> = Upper, <em>-L</em> = Lower). The grey bar is accuracy when the name is given (Direct QA); the blue bar is accuracy when it is removed (ShadowBench). The difference between them is the Shadow Gap. Blue falls below grey in most groups, and for the frontier models the drops are largest on Lower-tier (niche) entities, where Direct QA is still high.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="num">&minus;20.63</div><div class="lbl">GPT-5.4<br>77.56 &rarr; 56.93</div></div>
+      <div class="stat"><div class="num">&minus;20.37</div><div class="lbl">GPT-5.4-mini<br>68.11 &rarr; 47.74</div></div>
+      <div class="stat"><div class="num">&minus;16.73</div><div class="lbl">Claude-Sonnet-4.6<br>78.42 &rarr; 61.69</div></div>
+    </div>
+    <p class="table-caption" style="text-align:center;">Accuracy change (points), Direct QA &rarr; ShadowBench, Entertainment Lower tier.</p>
+
+    <details class="more">
+      <summary>Full numbers (Table 5)</summary>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr><th rowspan="2">Domain</th><th rowspan="2">Tier</th><th colspan="2">Llama-3-8B-Instruct</th><th colspan="2">Qwen3-8B</th><th colspan="2">GPT-5.4-mini</th><th colspan="2">GPT-5.4</th><th colspan="2">Claude-Sonnet-4.6</th></tr>
+            <tr><th>Direct</th><th>SB</th><th>Direct</th><th>SB</th><th>Direct</th><th>SB</th><th>Direct</th><th>SB</th><th>Direct</th><th>SB</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Tech</td><td class="l">Upper</td><td>70.73</td><td>54</td><td>74.45</td><td>62</td><td>90.20</td><td>81.50</td><td>97.59</td><td>92.48</td><td>98.76</td><td>96.13</td></tr>
+            <tr><td></td><td class="l">Lower</td><td>42.49</td><td>40</td><td>56.70</td><td>56.70</td><td>78.57</td><td>67.78</td><td>89.06</td><td>76.63</td><td>91.59</td><td>80.65</td></tr>
+            <tr><td>Sports</td><td class="l">Upper</td><td>52.04</td><td>40.49</td><td>57.96</td><td>47.77</td><td>79.12</td><td>66.99</td><td>93.39</td><td>87.28</td><td>93.39</td><td>88.06</td></tr>
+            <tr><td></td><td class="l">Lower</td><td>37.94</td><td>37.15</td><td>56.62</td><td>53.56</td><td>76.38</td><td>63.83</td><td>85.08</td><td>77.96</td><td>84.78</td><td>79.05</td></tr>
+            <tr><td>Ent</td><td class="l">Upper</td><td>64.78</td><td>52</td><td>54.12</td><td>44</td><td>88.14</td><td>78.52</td><td>96.82</td><td>95.36</td><td>99.14</td><td>98.54</td></tr>
+            <tr><td></td><td class="l">Lower</td><td>33.62</td><td>31</td><td>40.29</td><td>41</td><td>68.11</td><td class="hl">47.74</td><td>77.56</td><td class="hl">56.93</td><td>78.42</td><td class="hl">61.69</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-caption"><strong>Table 5 (Appendix B.2).</strong> Direct QA vs. ShadowBench (SB) accuracy (%).</p>
+    </details>
+  </div>
+</section>
+
+<!-- ============ 4. Illusion of Forgetting ============ -->
+<section class="section" id="unlearning">
+  <div class="container is-max-desktop">
+    <h2 class="section-title">Finding 2: The Illusion of Forgetting</h2>
+    <div class="content">
+      <p>Unlearning is usually audited with name-driven questions. If knowledge is anchored to names, that audit may only test the anchor. We unlearn <strong>Elon Musk</strong> from Qwen3-8B with Gradient Ascent (GA), Gradient Difference (GD+KL), and NPO (NPO+KL), then ask ShadowBench questions about him without the name. We measure the <strong>Latent Entity Leakage Rate (LELR)</strong>: how often the model's reasoning trace still writes out the &ldquo;forgotten&rdquo; name while solving the question.</p>
+    </div>
+    <figure class="fig">
+      <div class="fig-card"><img src="static/figures/illusion_of_forgetting_ga_gd_npo.svg" alt="Line charts across training epochs for GA, GD+KL and NPO+KL: Direct QA ROUGE collapses while ShadowBench LELR stays near 1.0 and ShadowBench accuracy remains high." loading="lazy"></div>
+      <figcaption><strong>The Illusion of Forgetting across training epochs (Elon Musk target).</strong> Lexical recall (ROUGE, grey) vs. latent association (accuracy, green; LELR, blue).</figcaption>
+    </figure>
+    <div class="content">
+      <p><strong>How to read it.</strong> Each panel follows one unlearning method for three epochs. The <em>grey line</em> (ROUGE) is how well the model still recalls the entity's facts when asked by name: it drops almost immediately, so by this measure unlearning looks successful. The <em>blue dashed line</em> (LELR) is how often the reasoning still names Elon Musk: it stays near 1.0. The <em>green line</em> is ShadowBench accuracy, which is 58.4&ndash;68.8% at the selected checkpoints. LELR only reaches zero when the model itself collapses (GD+KL, epoch 3).</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="num">89.6&ndash;93.5%</div><div class="lbl">LELR<br>Qwen3-8B, all three methods</div></div>
+      <div class="stat"><div class="num">58.4&ndash;68.8%</div><div class="lbl">Shadow accuracy<br>Qwen3-8B, all three methods</div></div>
+    </div>
+
+    <div class="textbox">
+      <div class="tb-title">Qualitative Analysis: Explicit Identity Reconstruction (Qwen3-8B)</div>
+      <div><strong>Shadow prompt:</strong> <em>&ldquo;In July 2017, the subject said that the subject had received &lsquo;verbal government approval&rsquo; to build a hyperloop from New York City to Washington, D.C...&rdquo;</em></div>
+      <div style="margin-top:0.5rem;"><strong>Model reasoning trace (Chain-of-Thought):</strong></div>
+      <div class="trace">&lt;think&gt;</div>
+      <div class="trace">... The hyperloop is a transportation concept, and I remember that <span class="leak">Elon Musk</span> has been involved with hyperloop ideas. ...</div>
+      <div class="trace">... Option B: Launched the Amazon Kindle in 2007. That's <strong>Jeff Bezos</strong>. ...</div>
+      <div class="trace">... Option D: Co-founded Neuralink in 2016. Neuralink is a company founded by <span class="leak">Elon Musk</span>. ...</div>
+      <div class="trace">... If the question is about someone involved in a hyperloop project, and the answer D is about co-founding Neuralink (<span class="leak">which is Musk</span>), then the answer would be D. ...</div>
+      <div class="trace">&lt;/think&gt;</div>
+      <div style="margin-top:0.5rem;"><strong>Final predicted option:</strong> D &nbsp;&middot;&nbsp; <span class="muted"><strong>Reference:</strong> correct answer Elon Musk; distractors Ray Kurzweil, Jeff Bezos, Larry Ellison.</span></div>
+    </div>
+    <p class="table-caption"><strong>Figure 4 in the paper.</strong> The red text marks where the unlearned model writes out the name it was trained to forget. It recalls Elon Musk from the hyperloop, links him to Neuralink (option D), eliminates the other options, and answers D. A name-based audit would not see this.</p>
+
+    <details class="more">
+      <summary>Full numbers (Table 2)</summary>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr><th rowspan="2" class="l">Model / Method</th><th colspan="2">Direct Forget</th><th colspan="3">Shadow Forget</th><th colspan="2">Sanity Check</th></tr>
+            <tr><th>ROUGE&darr;</th><th>PPL&uarr;</th><th>Acc&darr;</th><th>LELR&darr;</th><th>PM&darr;</th><th>SR<sub>acc</sub>&uarr;</th><th>U<sub>PPL</sub>&darr;</th></tr>
+          </thead>
+          <tbody>
+            <tr class="group"><td colspan="8">Qwen3-8B</td></tr>
+            <tr><td class="l">Base</td><td>0.311</td><td>2.53</td><td>100</td><td>100</td><td>0.4588</td><td>100</td><td>5.015</td></tr>
+            <tr><td class="l">GA</td><td>0.272</td><td>127.67</td><td>58.4</td><td>93.5</td><td>0.193</td><td>76.8</td><td>13.14</td></tr>
+            <tr><td class="l">GD + KL</td><td>0.282</td><td>70.316</td><td>68.8</td><td>89.6</td><td>0.379</td><td>73.7</td><td>11.62</td></tr>
+            <tr><td class="l">NPO + KL</td><td>0.112</td><td>2,531</td><td>64.9</td><td>92.2</td><td>0.29</td><td>75.8</td><td>34.22</td></tr>
+            <tr class="group"><td colspan="8">Llama-3-8B-Instruct</td></tr>
+            <tr><td class="l">Base</td><td>0.288</td><td>2.457</td><td>100</td><td>100</td><td>0.79</td><td>100</td><td>4.746</td></tr>
+            <tr><td class="l">GA</td><td>0.099</td><td>4.76e+10</td><td>38.9</td><td>0</td><td>&minus;0.17</td><td>48.4</td><td>57.5</td></tr>
+            <tr><td class="l">GD + KL</td><td>0.1038</td><td>2.13e+9</td><td>40</td><td>2.5</td><td>&minus;0.15</td><td>52</td><td>27.24</td></tr>
+            <tr><td class="l">NPO + KL</td><td>0.13</td><td>6,730.5</td><td>35</td><td>36.36</td><td>&minus;0.259</td><td>36.5</td><td>82.259</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-caption"><strong>Table 2.</strong> Unlearning performance matrix. In the non-reasoning model (Llama), unlearning is achieved only via catastrophic weight degradation.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ============ 5. Two leakage modes ============ -->
+<section class="section" id="leakage-modes">
+  <div class="container is-max-desktop">
+    <h2 class="section-title">Finding 3: Two ways unlearning leaks</h2>
+    <div class="content">
+      <p>Repeating the NPO+KL experiment across Technology, Sports, and Entertainment shows that the leakage depends on how popular the forgotten entity is.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Domain</th><th>Tier</th><th>Acc&darr;</th><th>LELR&darr;</th><th>PM&darr;</th></tr></thead>
+        <tbody>
+          <tr><td>Technology</td><td class="l">Upper</td><td>64.9%</td><td>92.2%</td><td>0.29</td></tr>
+          <tr><td></td><td class="l">Lower</td><td>90.0%</td><td>0.0%</td><td>0.81</td></tr>
+          <tr><td>Sports</td><td class="l">Upper</td><td>79.0%</td><td>74.0%</td><td>0.59</td></tr>
+          <tr><td></td><td class="l">Lower</td><td>60.0%</td><td>0.0%</td><td>0.14</td></tr>
+          <tr><td>Entertainment</td><td class="l">Upper</td><td>36.6%</td><td>76.7%</td><td>0.02</td></tr>
+          <tr><td></td><td class="l">Lower</td><td>62.5%</td><td>0.0%</td><td>0.25</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption"><strong>Table 9 (Appendix C).</strong> Multi-domain unlearning generalization of NPO+KL (Shadow Forget metrics). Direct lexical recall is suppressed, yet latent associations persist.</p>
+
+    <div class="modes">
+      <div class="mode">
+        <h4>Popular entities (Upper tier): explicit leakage</h4>
+        <img src="static/figures/explicit-entity-reconstruction.svg" alt="Reasoning excerpt: '... I remember that Elon Musk has been involved with hyperloop ideas ...' with the name highlighted." loading="lazy">
+        <p>Popular targets leak <strong>explicitly</strong>: the model rebuilds the name in its reasoning. LELR is 74.0&ndash;92.2% across the three domains.</p>
+      </div>
+      <div class="mode">
+        <h4>Niche entities (Lower tier): implicit leakage</h4>
+        <img src="static/figures/implicit-correlation.svg" alt="Trait A and Trait B are still linked by a solid line, while the hidden entity between them is shown as a dashed question mark: the name never surfaces." loading="lazy">
+        <p>Niche targets leak <strong>implicitly</strong>: no name appears (LELR 0.0%), yet the facts stay linked and shadow accuracy remains 60.0&ndash;90.0%. A name-based audit would not flag this.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BibTeX ============ -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <div class="bibtex-header">
+      <h2 class="section-title" style="margin-bottom:0 !important;">BibTeX</h2>
+      <button class="copy-bibtex-btn" onclick="copyBibTeX()" title="Copy BibTeX to clipboard">Copy</button>
+    </div>
+    <!-- TODO: replace with the official NeurIPS 2026 BibTeX entry once it is available -->
+<pre id="bibtex-code"><code>% PLACEHOLDER: replace with the official NeurIPS 2026 entry once it is available.
+@inproceedings{maharjan2026shadowbench,
+  title     = {ShadowBench: Exposing Lexical Anchoring and the Illusion of Forgetting in Large Language Models},
+  author    = {Maharjan, Sujan and Liu, Lu},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS), Evaluations and Datasets Track},
+  year      = {2026}
+}</code></pre>
+  </div>
+</section>
+
+<!-- ============ Footer ============ -->
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noopener">Academic Project Page Template</a>, which was adopted from the <a href="https://nerfies.github.io" target="_blank" rel="noopener">Nerfies</a> project page.
+            This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
