@@ -6,7 +6,7 @@
   </picture>
 </p>
 
-<h3 align="center">ShadowBench: Exposing Lexical Anchoring and the Illusion of Forgetting in Large Language Models</h3>
+<h1 align="center">ShadowBench: Exposing Lexical Anchoring and the Illusion of Forgetting in Large Language Models</h3>
 
 <p align="center">
   Sujan Maharjan &middot; Lu Liu<br>
