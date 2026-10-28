@@ -10,15 +10,18 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from datasets import load_dataset
 from metrics import get_metric, METRIC_REGISTRY
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", type=str, required=True)
+    parser.add_argument("--repo_name", type=str, required=True)
     parser.add_argument("--subset", type=str, required=True)
     parser.add_argument("--split", type=str, required=True)
     parser.add_argument("--output_name", type=str, required=True)
-    parser.add_argument("--metrics", nargs="+", default=["generation", "probability"], 
+    parser.add_argument("--metrics", nargs="+", default=["generation", "probability"],
                         help=f"List of metrics to run. Options: {list(METRIC_REGISTRY.keys())}")
-    parser.add_argument("--baseline_json", type=str, help="Filepath to the JSON baseline results")
+    parser.add_argument("--baseline_json", type=str,
+                        help="Filepath to the JSON baseline results")
     args = parser.parse_args()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -27,12 +30,14 @@ def main():
     print(f"Initializing Model: {args.model_path}")
     tokenizer = AutoTokenizer.from_pretrained(args.model_path)
     tokenizer.padding_side = "left"
-    if tokenizer.pad_token is None: tokenizer.pad_token = tokenizer.eos_token
-    
-    model = AutoModelForCausalLM.from_pretrained(args.model_path, torch_dtype=torch.bfloat16, device_map="auto")
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+
+    model = AutoModelForCausalLM.from_pretrained(
+        args.model_path, torch_dtype=torch.bfloat16, device_map="auto")
 
     # 2. Load Data
-    # dataset = load_dataset(f"{repo-name}", args.subset, split=args.split)
+    dataset = load_dataset(f"{args.repo_name}", args.subset, split=args.split)
 
     # Optional: Load baseline results for comparison metrics (like KS-Test)
     baseline_data = None
@@ -55,7 +60,7 @@ def main():
             result = metric_obj.compute(dataset, **kwargs)
         else:
             result = metric_obj.compute(dataset)
-                
+
         all_results["summary"][metric_name] = result["metrics"]
         all_results["detailed"][metric_name] = result["raw"]
 
@@ -68,6 +73,7 @@ def main():
     print("FINAL EVALUATION SUMMARY")
     print(json.dumps(all_results["summary"], indent=4))
     print("="*30)
+
 
 if __name__ == "__main__":
     main()
